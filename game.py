@@ -25,7 +25,7 @@ def get_quote_data():
 
         else:
             return choice(quotes_list)
-
+    #  maybe here get author clue of birthplace and then also add the first letter of their name and first letter of last name to the dict as well
 
 random_quote = get_quote_data()
 
