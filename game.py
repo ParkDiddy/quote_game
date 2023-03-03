@@ -64,7 +64,7 @@ def play_game():
     while guesses_left != 0:
         print(f"You have {guesses_left} guesses left.")
         guess = input("Enter your guess here:\n")
-        if guess != author and guesses_left > 0:
+        if guess.title() != author and guesses_left > 0:
             guesses_left -= 1
             if guesses_left == 0:
                 print(f"Sorry, you lost! The author was {author}.")
@@ -72,7 +72,7 @@ def play_game():
             print(clues_list[current_hint])
             current_hint += 1
             continue
-        if guess == author:
+        if guess.title() == author:
             print("You got it!!! Nice job.")
         break
     play_again = input("Would you like to play again? (y/n)\n")
@@ -82,4 +82,5 @@ def play_game():
     return
 
 
-play_game()
+if __name__ == "__main__":
+    play_game()
