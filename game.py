@@ -34,7 +34,8 @@ def get_quote_data(max_iterations=100):
         return choice(quotes_list)
 
 
-def get_author_clues(random_quote):
+def add_author_clues():
+    random_quote = get_quote_data()
     author_page = requests.get(f"https://quotes.toscrape.com{random_quote.get('author_link')}")
     soup = BeautifulSoup(author_page.text, "html.parser")
     clues = soup("div", class_="author-details")
@@ -46,13 +47,16 @@ def get_author_clues(random_quote):
 
 
 def play_game():
-    quote = get_quote_data()
-    clues = get_author_clues(quote)
+    quote = add_author_clues()  # instantiates author clues function which instantiates random quote
     guesses_left = 4
     current_hint = 0
-    clues_list = [f"Nope! Here's a hint: They were born on {clues.get('birthdate')} {clues.get('birthplace')}",
-                  f"Nope! Here's a hint: Their first letter of their first name is {clues.get('author')[0]}",
-                  f"Nope! Here's a hint: Their first letter of their last name is {clues.get('author').split()[1][0]}"]
+    author = quote.get('author')
+    clues_list = [f"Nope! Here's a hint: They were born on {quote.get('birthdate')} "
+                  f"{quote.get('birthplace')}",
+
+                  f"Nope! Here's a hint: Their first letter of their first name is {author[0]}",
+
+                  f"Nope! Here's a hint: Their first letter of their last name is {author.split()[1][0]}"]
 
     print("Welcome to the quote game! I will give you a quote and you need to guess who said it!")
     print(quote.get("quote"))
@@ -60,15 +64,15 @@ def play_game():
     while guesses_left != 0:
         print(f"You have {guesses_left} guesses left.")
         guess = input("Enter your guess here:\n")
-        if guess != quote.get("author") and guesses_left > 0:
+        if guess != author and guesses_left > 0:
             guesses_left -= 1
             if guesses_left == 0:
-                print(f"Sorry, you lost! The author was {quote.get('author')}.")
+                print(f"Sorry, you lost! The author was {author}.")
                 break
             print(clues_list[current_hint])
             current_hint += 1
             continue
-        if guess == quote.get("author"):
+        if guess == author:
             print("You got it!!! Nice job.")
         break
     play_again = input("Would you like to play again? (y/n)\n")
