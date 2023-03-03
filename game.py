@@ -7,15 +7,14 @@ from random import choice
 def get_quote_data(max_iterations=100):
     counter = 0
     page_num = 1
-
     quotes_list = []  # will be a list of dictionaries with keys of quote, author and author link
 
     while True:
         if counter == max_iterations:
-            break
+            return choice(quotes_list)
         counter += 1
-
-        response = requests.get(f"https://quotes.toscrape.com/page/{page_num}/")
+        url = f"https://quotes.toscrape.com/page/{page_num}/"
+        response = requests.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
         text = str(soup("div", class_="col-md-8"))
 
@@ -31,14 +30,13 @@ def get_quote_data(max_iterations=100):
         else:
             return choice(quotes_list)
 
-        return choice(quotes_list)
-
 
 def add_author_clues():
     random_quote = get_quote_data()
     author_page = requests.get(f"https://quotes.toscrape.com{random_quote.get('author_link')}")
     soup = BeautifulSoup(author_page.text, "html.parser")
     clues = soup("div", class_="author-details")
+
     for clue in clues:
         birthdate = clue.find("span", class_="author-born-date").get_text()
         birthplace = clue.find("span", class_="author-born-location").get_text()
@@ -75,6 +73,7 @@ def play_game():
         if guess.title() == author:
             print("You got it!!! Nice job.")
         break
+
     play_again = input("Would you like to play again? (y/n)\n")
     if play_again == "y":
         play_game()
